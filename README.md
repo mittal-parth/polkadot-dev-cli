@@ -2,7 +2,9 @@
 
 A CLI tool for Polkadot developers to include different crates and tools for developing on Polkadot like linting, formatting, version management, etc.
 
+```
 Usage: polkadot-dev-cli <COMMAND>
+
 
 Commands:
   help-contribute  Show a checklist for contributing to the project
@@ -13,3 +15,4 @@ Commands:
 Options:
   -h, --help     Print help
   -V, --version  Print version
+```
