@@ -6,8 +6,8 @@ mod psvm;
 use clap::{Arg, Command};
 
 fn main() {
-    let cmd = Command::new("polkadot-dev-cli")
-        .bin_name("polkadot-dev-cli")
+    let cmd = Command::new("polkadot-dev")
+        .bin_name("polkadot-dev")
         .version("1.0")
         .about(
             "CLI tool for Polkadot developers bundling linting, formatting, and version management",

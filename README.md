@@ -3,7 +3,7 @@
 A CLI tool for Polkadot developers to include different crates and tools for developing on Polkadot like linting, formatting, version management, etc.
 
 ```
-Usage: polkadot-dev-cli <COMMAND>
+Usage: polkadot-dev <COMMAND>
 
 
 Commands:
