@@ -80,6 +80,53 @@ fn main() {
                         .arg(Arg::new("from").help("From crate").required(true).index(1))
                         .arg(Arg::new("to").help("To crate").required(true).index(2)),
                 ),
+        )
+        .subcommand(
+            Command::new("version")
+            .about("Manage Polkadot SDK versions via psvm")
+            .arg(
+                Arg::new("list")
+                    .short('l')
+                    .long("list")
+                    .help("List all available versions")
+                    .global(true)
+                    .action(clap::ArgAction::SetTrue),
+            )
+            .arg(
+                Arg::new("version")
+                .short('v')
+                .long("version")
+                .help("Specifies the Polkadot SDK version")
+            )
+            .arg(
+                Arg::new("path")
+                    .short('p')
+                    .long("path")
+                    .help("Path to a crate folder or Cargo.toml file [default: Cargo.toml]")
+                    .global(true)
+            )
+            .arg(
+                Arg::new("overwrite")
+                .short('o')
+                .long("overwrite")
+                .help("Overwrite local dependencies (using path) with same name as the ones in the Polkadot SDK")
+                .global(true)
+                .action(clap::ArgAction::SetTrue),
+            )
+            .arg(
+                Arg::new("check")
+                .short('c')
+                .long("check")
+                .help("Check if the dependencies versions match the Polkadot SDK version. Does not update the Cargo.toml")
+                .action(clap::ArgAction::SetTrue),
+            )
+            .arg(
+                Arg::new("orml")
+                .short('O')
+                .long("orml")
+                .help("To either list available ORML version or update the Cargo.toml file with the corresponding ORML version")
+                .action(clap::ArgAction::SetTrue),
+            )
         );
 
     // Get matches for the command-line arguments
@@ -114,6 +161,16 @@ fn main() {
                 ),
                 _ => unreachable!("clap should ensure we don't get here"),
             }
+        }
+        Some(("version", sub_matches)) => {
+            let list = sub_matches.get_flag("list");
+            let path = sub_matches.get_one::<String>("path").map(|s| s.as_str());
+            let version = sub_matches.get_one::<String>("version").map(|s| s.as_str());
+            let overwrite = sub_matches.get_flag("overwrite");
+            let check = sub_matches.get_flag("check");
+            let orml = sub_matches.get_flag("orml");
+
+            psvm::run_version(list, overwrite, check, orml, version, path)
         }
         _ => unreachable!("clap should ensure we don't get here"),
     };
