@@ -4,10 +4,17 @@ use std::process::Command;
 
 // Function to run zepter lint features
 pub fn run_lint_features(fix: bool) {
-    // Ensure zepter is installed
-    if let Err(e) = install_zepter() {
-        eprintln!("Error installing zepter: {}", e);
-        return;
+    // Check if zepter is installed by running `zepter --version`
+    if Command::new("zepter")
+        .arg("--version")
+        .output()
+        .is_err()
+    {
+        // If `zepter --version` fails, attempt to install it
+        if let Err(e) = install_zepter() {
+            eprintln!("Error installing zepter: {}", e);
+            return;
+        }
     }
 
     // Prepare command
@@ -19,23 +26,24 @@ pub fn run_lint_features(fix: bool) {
     }
 
     // Run command
-    match cmd.status() {
-        Ok(status) if !status.success() => {
-            eprintln!("zepter lint features failed with status: {}", status);
-        }
-        Err(e) => {
-            eprintln!("Error running zepter lint features: {}", e);
-        }
-        Ok(_) => {}
+    if let Err(e) = cmd.status() {
+        eprintln!("Error running zepter lint features: {}", e);
     }
 }
 
 // Function to run zepter lint trace
 pub fn run_lint_trace(fix: bool, sub_matches: &ArgMatches) {
-    // Ensure zepter is installed
-    if let Err(e) = install_zepter() {
-        eprintln!("Error installing zepter: {}", e);
-        return;
+    // Check if zepter is installed by running `zepter --version`
+    if Command::new("zepter")
+        .arg("--version")
+        .output()
+        .is_err()
+    {
+        // If `zepter --version` fails, attempt to install it
+        if let Err(e) = install_zepter() {
+            eprintln!("Error installing zepter: {}", e);
+            return;
+        }
     }
 
     // Prepare command
