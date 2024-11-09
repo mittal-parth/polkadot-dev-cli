@@ -2,6 +2,7 @@ mod contribute;
 mod format;
 mod lint;
 mod psvm;
+mod install;
 
 use clap::{Arg, Command};
 
@@ -127,6 +128,10 @@ fn main() {
                 .help("To either list available ORML version or update the Cargo.toml file with the corresponding ORML version")
                 .action(clap::ArgAction::SetTrue),
             )
+        )
+        .subcommand(
+            Command::new("install")
+            .about("Install all the required dependencies for polkadot-sdk development")
         );
 
     // Get matches for the command-line arguments
@@ -135,6 +140,7 @@ fn main() {
     // Handle the subcommands
     match matches.subcommand() {
         Some(("help-contribute", _)) => contribute::contribute_help(),
+        Some(("install", _)) => install::run_install(),
         Some(("format", sub_matches)) => format::run_format(sub_matches),
         Some(("lint", sub_matches)) => {
             let fix = sub_matches.get_flag("fix");
