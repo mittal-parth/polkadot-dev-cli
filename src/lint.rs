@@ -3,13 +3,16 @@ use std::io::{self};
 use std::process::Command;
 
 // Function to run zepter lint features
-pub fn run_lint_features(fix: bool) {
+pub fn run_lint_features(
+    fix: bool,
+    quiet: bool,
+    color: bool,
+    exit_code_zero: bool,
+    log: Option<&str>,
+    fix_hint: Option<&str>,
+) {
     // Check if zepter is installed by running `zepter --version`
-    if Command::new("zepter")
-        .arg("--version")
-        .output()
-        .is_err()
-    {
+    if Command::new("zepter").arg("--version").output().is_err() {
         // If `zepter --version` fails, attempt to install it
         if let Err(e) = install_zepter() {
             eprintln!("Error installing zepter: {}", e);
@@ -21,9 +24,8 @@ pub fn run_lint_features(fix: bool) {
     let mut cmd = Command::new("zepter");
     cmd.arg("format").arg("features");
 
-    if fix {
-        cmd.arg("--fix");
-    }
+    // Add common arguments
+    add_common_args(&mut cmd, fix, quiet, color, exit_code_zero, log, fix_hint);
 
     // Run command
     if let Err(e) = cmd.status() {
@@ -32,13 +34,17 @@ pub fn run_lint_features(fix: bool) {
 }
 
 // Function to run zepter lint trace
-pub fn run_lint_trace(fix: bool, sub_matches: &ArgMatches) {
+pub fn run_lint_trace(
+    fix: bool,
+    quiet: bool,
+    color: bool,
+    exit_code_zero: bool,
+    log: Option<&str>,
+    fix_hint: Option<&str>,
+    sub_matches: &ArgMatches,
+) {
     // Check if zepter is installed by running `zepter --version`
-    if Command::new("zepter")
-        .arg("--version")
-        .output()
-        .is_err()
-    {
+    if Command::new("zepter").arg("--version").output().is_err() {
         // If `zepter --version` fails, attempt to install it
         if let Err(e) = install_zepter() {
             eprintln!("Error installing zepter: {}", e);
@@ -51,17 +57,12 @@ pub fn run_lint_trace(fix: bool, sub_matches: &ArgMatches) {
     cmd.arg("trace");
 
     // Add the from and to arguments if they exist
-    if let Some(from) = sub_matches.get_one::<String>("from") {
-        cmd.arg(from);
+    cmd.arg("trace")
+        .arg(sub_matches.get_one::<String>("from").unwrap())
+        .arg(sub_matches.get_one::<String>("to").unwrap());
 
-        if let Some(to) = sub_matches.get_one::<String>("to") {
-            cmd.arg(to);
-        }
-    }
-
-    if fix {
-        cmd.arg("--fix");
-    }
+    // Add common arguments
+    add_common_args(&mut cmd, fix, quiet, color, exit_code_zero, log, fix_hint);
 
     match cmd.status() {
         Ok(status) if !status.success() => {
@@ -90,4 +91,37 @@ fn install_zepter() -> io::Result<()> {
     }
 
     Ok(())
+}
+
+// Helper function to add the flags and arguments common to all zepter commands
+fn add_common_args(
+    cmd: &mut Command,
+    fix: bool,
+    quiet: bool,
+    color: bool,
+    exit_code_zero: bool,
+    log: Option<&str>,
+    fix_hint: Option<&str>,
+) {
+    // Add flags
+    if fix {
+        cmd.arg("--fix");
+    }
+    if quiet {
+        cmd.arg("--quiet");
+    }
+    if color {
+        cmd.arg("--color");
+    }
+    if exit_code_zero {
+        cmd.arg("--exit-code-zero");
+    }
+
+    // Add arguments with values
+    if let Some(log_level) = log {
+        cmd.arg("--log").arg(log_level);
+    }
+    if let Some(hint) = fix_hint {
+        cmd.arg("--fix-hint").arg(hint);
+    }
 }
