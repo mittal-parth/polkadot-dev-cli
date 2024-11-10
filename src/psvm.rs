@@ -23,7 +23,7 @@ pub fn run_version(
     let mut cmd = Command::new("psvm");
 
     // Add arguments to the command
-    add_args(&mut cmd, list, overwrite, check, orml, version, path);
+    add_optional_args(&mut cmd, list, overwrite, check, orml, version, path);
 
     // Run the command and capture the output
     if let Err(e) = cmd.status() {
@@ -44,7 +44,7 @@ fn install_psvm() -> io::Result<()> {
     Ok(())
 }
 
-fn add_args(
+fn add_optional_args(
     cmd: &mut Command,
     list: bool,
     overwrite: bool,

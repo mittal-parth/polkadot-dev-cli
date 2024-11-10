@@ -25,7 +25,7 @@ pub fn run_lint_features(
     cmd.arg("format").arg("features");
 
     // Add common arguments
-    add_common_args(&mut cmd, fix, quiet, color, exit_code_zero, log, fix_hint);
+    add_optional_args(&mut cmd, fix, quiet, color, exit_code_zero, log, fix_hint);
 
     // Run command
     if let Err(e) = cmd.status() {
@@ -62,7 +62,7 @@ pub fn run_lint_trace(
         .arg(sub_matches.get_one::<String>("to").unwrap());
 
     // Add common arguments
-    add_common_args(&mut cmd, fix, quiet, color, exit_code_zero, log, fix_hint);
+    add_optional_args(&mut cmd, fix, quiet, color, exit_code_zero, log, fix_hint);
 
     match cmd.status() {
         Ok(status) if !status.success() => {
@@ -94,7 +94,7 @@ fn install_zepter() -> io::Result<()> {
 }
 
 // Helper function to add the flags and arguments common to all zepter commands
-fn add_common_args(
+fn add_optional_args(
     cmd: &mut Command,
     fix: bool,
     quiet: bool,

@@ -1,36 +1,76 @@
-// src/format.rs
+use std::process::Command;
 
-use clap::ArgMatches;
-use std::process::Command as ProcessCommand;
+pub fn run_format(
+    quiet: bool,
+    verbose: bool,
+    version: bool,
+    package: Option<&str>,
+    manifest_path: Option<&str>,
+    message_format: Option<&str>,
+    all: bool,
+    check: bool,
+) {
+    let mut cmd = Command::new("cargo");
 
-pub fn run_format(sub_matches: &ArgMatches) {
-    // Version of Rust nightly to use
-    let rust_version = "nightly-2024-04-14";
+    cmd.arg("+nightly").arg("fmt");
 
-    // If the user requests the version, show it
-    if sub_matches.contains_id("show-version") {
-        println!("Using Rust version: {}", rust_version);
-        return;
+    add_optional_args(
+        &mut cmd,
+        quiet,
+        verbose,
+        version,
+        package,
+        manifest_path,
+        message_format,
+        all,
+        check,
+    );
+
+    if let Err(e) = cmd.status() {
+        eprintln!("Error running zepter lint features: {}", e);
+    }
+}
+
+fn add_optional_args(
+    cmd: &mut Command,
+    quiet: bool,
+    verbose: bool,
+    version: bool,
+    package: Option<&str>,
+    manifest_path: Option<&str>,
+    message_format: Option<&str>,
+    all: bool,
+    check: bool,
+) {
+    if quiet {
+        cmd.arg("--quiet");
     }
 
-    // Run the command with the specific version of Rust
-    let status = ProcessCommand::new("cargo")
-        .arg(format!("+{}", rust_version)) // Specify the nightly version
-        .arg("fmt") // Run cargo fmt
-        .status();
+    if verbose {
+        cmd.arg("--verbose");
+    }
 
-    match status {
-        Ok(status) if status.success() => {
-            println!("Code formatted successfully!");
-        }
-        Ok(status) => {
-            eprintln!(
-                "Failed to format code. Cargo fmt returned non-zero status: {}",
-                status
-            );
-        }
-        Err(e) => {
-            eprintln!("Error executing cargo fmt: {}", e);
-        }
+    if version {
+        cmd.arg("--version");
+    }
+
+    if let Some(package) = package {
+        cmd.arg("--package").arg(package);
+    }
+
+    if let Some(manifest_path) = manifest_path {
+        cmd.arg("--manifest-path").arg(manifest_path);
+    }
+
+    if let Some(message_format) = message_format {
+        cmd.arg("--message-format").arg(message_format);
+    }
+
+    if all {
+        cmd.arg("--all");
+    }
+
+    if check {
+        cmd.arg("--check");
     }
 }

@@ -1,8 +1,8 @@
 mod contribute;
 mod format;
+mod install;
 mod lint;
 mod psvm;
-mod install;
 
 use clap::{Arg, Command};
 
@@ -22,10 +22,61 @@ fn main() {
             Command::new("format")
                 .about("Format code using the correct Rust nightly version")
                 .arg(
-                    Arg::new("show-version")
-                        .long("show-version")
-                        .help("Displays the Rust nightly version to be used"),
-                ),
+                    Arg::new("quiet")
+                        .short('q')
+                        .long("quiet")
+                        .help("No output printed to stdout")
+                        .global(true)
+                        .action(clap::ArgAction::SetTrue),
+                )
+                .arg(
+                    Arg::new("verbose")
+                        .short('v')
+                        .long("verbose")
+                        .help("Use verbose output")
+                        .global(true)
+                        .action(clap::ArgAction::SetTrue),
+                )
+                .arg(
+                    Arg::new("version")
+                        .long("version")
+                        .help("Print rustfmt version and exit")
+                        .global(true)
+                        .action(clap::ArgAction::SetTrue),
+                )
+                .arg(
+                    Arg::new("package")
+                        .short('p')
+                        .long("package")
+                        .help("Specify Package to format")
+                        .global(true),
+                )
+                .arg(
+                    Arg::new("manifest-path")
+                        .long("manifest-path")
+                        .help("Specify path to the Cargo.toml file")
+                        .global(true),
+                )
+                .arg(
+                    Arg::new("message-format")
+                        .long("message-format")
+                        .help("Specify message-format: short|json|human")
+                        .global(true),
+                )
+                .arg(
+                    Arg::new("all")
+                        .long("all")
+                        .help("Format all packages, and also their local path-based dependencies")
+                        .global(true)
+                        .action(clap::ArgAction::SetTrue),
+                )
+                .arg(
+                    Arg::new("check")
+                        .long("check")
+                        .help("Run rustfmt in check mode")
+                        .global(true)
+                        .action(clap::ArgAction::SetTrue),
+                )
         )
         .subcommand(
             Command::new("lint")
@@ -141,7 +192,31 @@ fn main() {
     match matches.subcommand() {
         Some(("help-contribute", _)) => contribute::contribute_help(),
         Some(("install", _)) => install::run_install(),
-        Some(("format", sub_matches)) => format::run_format(sub_matches),
+        Some(("format", sub_matches)) => {
+            let quiet = sub_matches.get_flag("quiet");
+            let verbose = sub_matches.get_flag("verbose");
+            let version = sub_matches.get_flag("version");
+            let package = sub_matches.get_one::<String>("package").map(|s| s.as_str());
+            let manifest_path = sub_matches
+                .get_one::<String>("manifest-path")
+                .map(|s| s.as_str());
+            let message_format = sub_matches
+                .get_one::<String>("message-format")
+                .map(|s| s.as_str());
+            let all = sub_matches.get_flag("all");
+            let check = sub_matches.get_flag("check");
+
+            format::run_format(
+                quiet,
+                verbose,
+                version,
+                package,
+                manifest_path,
+                message_format,
+                all,
+                check,
+            );
+        }
         Some(("lint", sub_matches)) => {
             let fix = sub_matches.get_flag("fix");
             let quiet = sub_matches.get_flag("quiet");
