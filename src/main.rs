@@ -1,7 +1,7 @@
 mod contribute;
 mod format;
 mod install;
-mod lint;
+mod flint;
 mod psvm;
 
 use clap::{Arg, Command};
@@ -79,16 +79,9 @@ fn main() {
                 )
         )
         .subcommand(
-            Command::new("lint")
+            Command::new("flint")
                 .about("Analyze, Fix and Lint features in your Rust workspace via Zepter")
-                .arg(
-                    Arg::new("fix")
-                        .short('f')
-                        .long("fix")
-                        .help("Apply available fixes")
-                        .global(true)
-                        .action(clap::ArgAction::SetTrue),
-                )
+                .visible_aliases(["feature-lint", "f-lint"])
                 .arg(
                     Arg::new("quiet")
                         .short('q')
@@ -217,7 +210,7 @@ fn main() {
                 check,
             );
         }
-        Some(("lint", sub_matches)) => {
+        Some(("flint", sub_matches)) => {
             let fix = sub_matches.get_flag("fix");
             let quiet = sub_matches.get_flag("quiet");
             let color = sub_matches.get_flag("color");
@@ -227,12 +220,14 @@ fn main() {
                 .get_one::<String>("fix-hint")
                 .map(|s| s.as_str());
 
+            if sub_matches.subcommand_name().is_none() {
+                flint::run(quiet, color, exit_code_zero, log, fix_hint);
+            }
             match sub_matches.subcommand() {
                 Some(("features", _)) => {
-                    lint::run_lint_features(fix, quiet, color, exit_code_zero, log, fix_hint)
+                    flint::run_features(quiet, color, exit_code_zero, log, fix_hint)
                 }
-                Some(("trace", trace_matches)) => lint::run_lint_trace(
-                    fix,
+                Some(("trace", trace_matches)) => flint::run_trace(
                     quiet,
                     color,
                     exit_code_zero,

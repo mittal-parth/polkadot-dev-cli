@@ -2,9 +2,32 @@ use clap::ArgMatches;
 use std::io::{self};
 use std::process::Command;
 
+pub fn run(
+    quiet: bool,
+    color: bool,
+    exit_code_zero: bool,
+    log: Option<&str>,
+    fix_hint: Option<&str>,
+) {
+    if Command::new("zepter").arg("--version").output().is_err() {
+        if let Err(e) = install_zepter() {
+            eprintln!("Error installing zepter: {}", e);
+            return;
+        }
+    }
+
+    let mut cmd = Command::new("zepter");
+    cmd.arg("run");
+
+    add_optional_args(&mut cmd, quiet, color, exit_code_zero, log, fix_hint);
+
+    if let Err(e) = cmd.status() {
+        eprintln!("Error running zepter lint features: {}", e);
+    }
+}
+
 // Function to run zepter lint features
-pub fn run_lint_features(
-    fix: bool,
+pub fn run_features(
     quiet: bool,
     color: bool,
     exit_code_zero: bool,
@@ -25,7 +48,7 @@ pub fn run_lint_features(
     cmd.arg("format").arg("features");
 
     // Add common arguments
-    add_optional_args(&mut cmd, fix, quiet, color, exit_code_zero, log, fix_hint);
+    add_optional_args(&mut cmd, quiet, color, exit_code_zero, log, fix_hint);
 
     // Run command
     if let Err(e) = cmd.status() {
@@ -34,8 +57,7 @@ pub fn run_lint_features(
 }
 
 // Function to run zepter lint trace
-pub fn run_lint_trace(
-    fix: bool,
+pub fn run_trace(
     quiet: bool,
     color: bool,
     exit_code_zero: bool,
@@ -62,7 +84,7 @@ pub fn run_lint_trace(
         .arg(sub_matches.get_one::<String>("to").unwrap());
 
     // Add common arguments
-    add_optional_args(&mut cmd, fix, quiet, color, exit_code_zero, log, fix_hint);
+    add_optional_args(&mut cmd, quiet, color, exit_code_zero, log, fix_hint);
 
     match cmd.status() {
         Ok(status) if !status.success() => {
@@ -96,7 +118,6 @@ fn install_zepter() -> io::Result<()> {
 // Helper function to add the flags and arguments common to all zepter commands
 fn add_optional_args(
     cmd: &mut Command,
-    fix: bool,
     quiet: bool,
     color: bool,
     exit_code_zero: bool,
@@ -104,9 +125,6 @@ fn add_optional_args(
     fix_hint: Option<&str>,
 ) {
     // Add flags
-    if fix {
-        cmd.arg("--fix");
-    }
     if quiet {
         cmd.arg("--quiet");
     }
