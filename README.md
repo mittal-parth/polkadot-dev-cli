@@ -10,7 +10,9 @@ Usage: polkadot-dev <COMMAND>
 Commands:
   help-contribute  Show a checklist for contributing to the project
   format           Format code using the correct Rust nightly version
-  lint             Analyze, Fix and Lint features in your Rust workspace via Zepter
+  flint            Analyze, Fix and Lint features in your Rust workspace via Zepter [aliases: feature-lint, f-lint]
+  version          Manage Polkadot SDK versions via psvm
+  install          Install all the required dependencies for polkadot-sdk development
   help             Print this message or the help of the given subcommand(s)
 
 Options:
