@@ -50,7 +50,7 @@ pub fn handle_flint_command(sub_matches: &clap::ArgMatches) {
         Some(("transpose", transpose_matches)) => {
             handle_transpose_command(&mut cmd, transpose_matches)
         }
-        _ => unreachable!("clap should ensure we don't get here"),
+        _ => unreachable!("Invalid command or subcommand combination. Please refer to the help"),
     }
 }
 
