@@ -42,18 +42,12 @@ pub fn handle_flint_command(sub_matches: &clap::ArgMatches) {
 
     // Match each subcommand and call the appropriate function
     match sub_matches.subcommand() {
-        Some(("format-features", sub_matches)) => {
-            handle_format_features(&mut cmd, sub_matches);
-        }
-        Some(("trace", trace_matches)) => {
-            handle_trace_command(&mut cmd, trace_matches);
-        }
+        Some(("format-features", sub_matches)) => handle_format_features(&mut cmd, sub_matches),
+        Some(("trace", trace_matches)) => handle_trace_command(&mut cmd, trace_matches),
         Some(("lint", lint_matches)) => handle_lint_command(&mut cmd, lint_matches),
-        Some(("debug", debug_matches)) => {
-            handle_debug_command(&mut cmd, debug_matches);
-        }
+        Some(("debug", debug_matches)) => handle_debug_command(&mut cmd, debug_matches),
         Some(("transpose", transpose_matches)) => {
-            handle_transpose_command(&mut cmd, transpose_matches);
+            handle_transpose_command(&mut cmd, transpose_matches)
         }
         _ => unreachable!("clap should ensure we don't get here"),
     }

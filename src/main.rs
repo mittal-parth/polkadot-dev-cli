@@ -2,6 +2,7 @@ mod contribute;
 mod flint;
 mod format;
 mod install;
+mod prdoc;
 mod psvm;
 
 use clap::{Arg, Command};
@@ -14,10 +15,12 @@ fn main() {
             "CLI tool for Polkadot developers bundling linting, formatting, and version management",
         )
         .subcommand_required(true)
+        // `help-contribute` command to show a checklist for contributing to the project
         .subcommand(
             Command::new("help-contribute")
                 .about("Show a checklist for contributing to the project"),
         )
+        // `format` command to format code using the correct Rust nightly version
         .subcommand(
             Command::new("format")
                 .about("Format code using the correct Rust nightly version")
@@ -78,6 +81,7 @@ fn main() {
                         .action(clap::ArgAction::SetTrue),
                 )
         )
+        // `flint` command to analyze, fix and lint features in your Rust workspace via Zepter
         .subcommand(
             Command::new("flint")
                 .about("Analyze, Fix and Lint features in your Rust workspace via Zepter")
@@ -596,7 +600,7 @@ fn main() {
                     )
                 ),
         )
-        // `version` command to Manage Polkadot SDK versions via psvm
+        // `version` command to manage Polkadot SDK versions via psvm
         .subcommand(
             Command::new("version")
             .about("Manage Polkadot SDK versions via psvm")
@@ -644,6 +648,128 @@ fn main() {
                 .action(clap::ArgAction::SetTrue),
             )
         )
+        // `prdoc` command to generate, check and load PRDoc files via prdoc
+        .subcommand(
+            Command::new("prdoc")
+            .about("Generate, check and load PRDoc files via prdoc")
+            .arg(
+                Arg::new("config")
+                    .long("config")
+                    .short('c')
+                    .help("[env: PRDOC_CONFIG=]")
+            )
+            .arg(
+                Arg::new("prdoc-folders")
+                    .long("prdoc-folders")
+                    .short('d')
+                    .help("[env: PRDOC_FOLDERS=]")
+            )
+            .arg(
+                Arg::new("version")
+                    .long("version")
+                    .short('v')
+                    .help("Show the version")
+            )
+            .arg(
+                Arg::new("json")
+                    .long("json")
+                    .short('j')
+                    .help("Output as JSON")
+            )
+            .subcommand(
+                Command::new("generate")
+                .about("Generate a new file. It will be saved by default unless you provide --dry-run.
+                The command will fail if the target file already exists.")
+                .arg(
+                    Arg::new("number")
+                        .long("number")
+                        .short('n')
+                        .help("The PR number")
+                        .required(true)
+                )
+                .arg(
+                    Arg::new("dry-run")
+                        .long("dry-run")
+                        .help("Do not save the generated document to file with the proper naming, show the content instead")
+                        .action(clap::ArgAction::SetTrue)
+                )
+                .arg(
+                    Arg::new("output-dir")
+                        .long("output-dir")
+                        .short('o')
+                        .help("Optional output directory. It not passed, the default PRDOC_DIR will be used under the root of the current project")
+                )
+            )
+            .subcommand(
+                Command::new("check")
+                .about("Check one ore more prdoc files for validity")
+                .arg(
+                    Arg::new("file")
+                        .long("file")
+                        .short('f')
+                        .help("Directly specify the file to be checked. It can be relative to the base directory")
+                )
+                .arg(
+                    Arg::new("number")
+                        .long("number")
+                        .short('n')
+                        .help("The PR number")
+                )
+                .arg(
+                    Arg::new("list")
+                        .long("list")
+                        .short('l')
+                        .help("Get the list of PR numbers from a file")
+                )
+                .arg(
+                    Arg::new("schema")
+                        .long("schema")
+                        .short('s')
+                        .help("Schema to be used. Passing this flag/ENV overrides the value from the config [env: PRDOC_SCHEMA=]")
+                )
+            )
+            .subcommand(
+                Command::new("scan")
+                .about("Scan a directory for prdoc files based on their name")
+                .arg(
+                    Arg::new("all")
+                        .long("all")
+                        .short('a')
+                        .help("Also return invalid files")
+                        .action(clap::ArgAction::SetTrue)
+                )
+                .arg(
+                    Arg::new("sort")
+                        .long("sort")
+                        .short('s')
+                        .help("Sort the output")
+                        .action(clap::ArgAction::SetTrue)
+                )
+            )
+            .subcommand(
+                Command::new("load")
+                .about("Load one or more prdoc")
+                .arg(
+                    Arg::new("file")
+                        .long("file")
+                        .short('f')
+                        .help("Directly specify the file to be loaded. It can be relative to the base directory")
+                )
+                .arg(
+                    Arg::new("number")
+                        .long("number")
+                        .short('n')
+                        .help("One or more PR numbers. Depending on the host OS, the max length of a command may differ. 
+                        If you run into issues, make sure to check the --list option instead")
+                )
+                .arg(
+                    Arg::new("list")
+                        .long("list")
+                        .short('l')
+                        .help("Get the list of PR numbers from a file")
+                )
+            )
+        )
         // `install` command to install all the required dependencies for polkadot-sdk development
         .subcommand(
             Command::new("install")
@@ -683,6 +809,7 @@ fn main() {
             );
         }
         Some(("flint", sub_matches)) => flint::handle_flint_command(sub_matches),
+        Some(("prdoc", sub_matches)) => prdoc::handle_prdoc_command(sub_matches),
         Some(("version", sub_matches)) => {
             let list = sub_matches.get_flag("list");
             let path = sub_matches.get_one::<String>("path").map(|s| s.as_str());
