@@ -4,6 +4,7 @@ mod format;
 mod install;
 mod prdoc;
 mod psvm;
+mod checkup;
 
 use clap::{Arg, Command};
 
@@ -770,6 +771,16 @@ fn main() {
                 )
             )
         )
+        .subcommand(
+            Command::new("checkup")
+            .about("Runs format, flint and version altogether")
+            .arg(
+                Arg::new("version")
+                .short('v')
+                .long("version")
+                .help("Specify the Polkadot SDK version to check versions against")
+            )
+        )
         // `install` command to install all the required dependencies for polkadot-sdk development
         .subcommand(
             Command::new("install")
@@ -784,6 +795,7 @@ fn main() {
         Some(("flint", sub_matches)) => flint::handle_flint_command(sub_matches),
         Some(("prdoc", sub_matches)) => prdoc::handle_prdoc_command(sub_matches),
         Some(("version", sub_matches)) => psvm::handle_version_command(sub_matches),
+        Some(("checkup", sub_matches)) => checkup::run_checkup(sub_matches),
         _ => unreachable!("Invalid command or subcommand combination. Please refer to the help"),
     };
 }
