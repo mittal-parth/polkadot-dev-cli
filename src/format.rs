@@ -1,47 +1,24 @@
 use std::process::Command;
 
-pub fn run_format(
-    quiet: bool,
-    verbose: bool,
-    version: bool,
-    package: Option<&str>,
-    manifest_path: Option<&str>,
-    message_format: Option<&str>,
-    all: bool,
-    check: bool,
-) {
+pub fn run_format(sub_matches: &clap::ArgMatches) {
     let mut cmd = Command::new("cargo");
 
     cmd.arg("+nightly").arg("fmt");
 
-    add_optional_args(
-        &mut cmd,
-        quiet,
-        verbose,
-        version,
-        package,
-        manifest_path,
-        message_format,
-        all,
-        check,
-    );
+    // Add optional arguments to the command
+    let quiet = sub_matches.get_flag("quiet");
+    let verbose = sub_matches.get_flag("verbose");
+    let version = sub_matches.get_flag("version");
+    let package = sub_matches.get_one::<String>("package").map(|s| s.as_str());
+    let manifest_path = sub_matches
+        .get_one::<String>("manifest-path")
+        .map(|s| s.as_str());
+    let message_format = sub_matches
+        .get_one::<String>("message-format")
+        .map(|s| s.as_str());
+    let all = sub_matches.get_flag("all");
+    let check = sub_matches.get_flag("check");
 
-    if let Err(e) = cmd.status() {
-        eprintln!("Error running zepter lint features: {}", e);
-    }
-}
-
-fn add_optional_args(
-    cmd: &mut Command,
-    quiet: bool,
-    verbose: bool,
-    version: bool,
-    package: Option<&str>,
-    manifest_path: Option<&str>,
-    message_format: Option<&str>,
-    all: bool,
-    check: bool,
-) {
     if quiet {
         cmd.arg("--quiet");
     }
@@ -65,12 +42,14 @@ fn add_optional_args(
     if let Some(message_format) = message_format {
         cmd.arg("--message-format").arg(message_format);
     }
-
     if all {
         cmd.arg("--all");
     }
-
     if check {
         cmd.arg("--check");
+    }
+
+    if let Err(e) = cmd.status() {
+        eprintln!("Error running zepter lint features: {}", e);
     }
 }
