@@ -38,6 +38,7 @@ pub fn handle_flint_command(sub_matches: &clap::ArgMatches) {
     // Default behavior if no subcommand is specified
     if sub_matches.subcommand_name().is_none() {
         handle_run(&mut cmd, sub_matches);
+        return;
     }
 
     // Match each subcommand and call the appropriate function
