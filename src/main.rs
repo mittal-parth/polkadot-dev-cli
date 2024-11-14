@@ -776,50 +776,14 @@ fn main() {
             .about("Install all the required dependencies for polkadot-sdk development")
         );
 
-    // Get matches for the command-line arguments
-    let matches = cmd.get_matches();
-
     // Handle the subcommands
-    match matches.subcommand() {
+    match cmd.get_matches().subcommand() {
         Some(("help-contribute", _)) => contribute::contribute_help(),
         Some(("install", _)) => install::run_install(),
-        Some(("format", sub_matches)) => {
-            let quiet = sub_matches.get_flag("quiet");
-            let verbose = sub_matches.get_flag("verbose");
-            let version = sub_matches.get_flag("version");
-            let package = sub_matches.get_one::<String>("package").map(|s| s.as_str());
-            let manifest_path = sub_matches
-                .get_one::<String>("manifest-path")
-                .map(|s| s.as_str());
-            let message_format = sub_matches
-                .get_one::<String>("message-format")
-                .map(|s| s.as_str());
-            let all = sub_matches.get_flag("all");
-            let check = sub_matches.get_flag("check");
-
-            format::run_format(
-                quiet,
-                verbose,
-                version,
-                package,
-                manifest_path,
-                message_format,
-                all,
-                check,
-            );
-        }
+        Some(("format", sub_matches)) => format::run_format(sub_matches),
         Some(("flint", sub_matches)) => flint::handle_flint_command(sub_matches),
         Some(("prdoc", sub_matches)) => prdoc::handle_prdoc_command(sub_matches),
-        Some(("version", sub_matches)) => {
-            let list = sub_matches.get_flag("list");
-            let path = sub_matches.get_one::<String>("path").map(|s| s.as_str());
-            let version = sub_matches.get_one::<String>("version").map(|s| s.as_str());
-            let overwrite = sub_matches.get_flag("overwrite");
-            let check = sub_matches.get_flag("check");
-            let orml = sub_matches.get_flag("orml");
-
-            psvm::run_version(list, overwrite, check, orml, version, path)
-        }
-        _ => unreachable!("clap should ensure we don't get here"),
+        Some(("version", sub_matches)) => psvm::handle_version_command(sub_matches),
+        _ => unreachable!("Invalid command or subcommand combination. Please refer to the help"),
     };
 }
