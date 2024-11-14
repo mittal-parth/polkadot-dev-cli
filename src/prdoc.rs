@@ -45,7 +45,7 @@ fn handle_generate(cmd: &mut Command, generate_matches: &clap::ArgMatches) {
     let dry_run = generate_matches.get_flag("dry-run");
     let output_dir = generate_matches.get_one::<String>("output-dir");
 
-    cmd.arg("--number").arg(number);
+    cmd.arg(number);
 
     if dry_run {
         cmd.arg("--dry-run");

@@ -44,7 +44,6 @@ fn main() {
                     Arg::new("version")
                         .long("version")
                         .help("Print rustfmt version and exit")
-                        .global(true)
                         .action(clap::ArgAction::SetTrue),
                 )
                 .arg(
@@ -669,12 +668,14 @@ fn main() {
                     .long("version")
                     .short('v')
                     .help("Show the version")
+                    .action(clap::ArgAction::SetTrue)
             )
             .arg(
                 Arg::new("json")
                     .long("json")
                     .short('j')
                     .help("Output as JSON")
+                    .action(clap::ArgAction::SetTrue)
             )
             .subcommand(
                 Command::new("generate")
@@ -682,10 +683,9 @@ fn main() {
                 The command will fail if the target file already exists.")
                 .arg(
                     Arg::new("number")
-                        .long("number")
-                        .short('n')
                         .help("The PR number")
                         .required(true)
+                        .index(1)
                 )
                 .arg(
                     Arg::new("dry-run")
