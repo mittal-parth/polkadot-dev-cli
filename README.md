@@ -12,6 +12,7 @@ Commands:
   format           Format code using the correct Rust nightly version
   flint            Analyze, Fix and Lint features in your Rust workspace via Zepter [aliases: feature-lint, f-lint]
   version          Manage Polkadot SDK versions via psvm
+  prdoc            Generate, check and load PRDoc files via prdoc
   install          Install all the required dependencies for polkadot-sdk development
   help             Print this message or the help of the given subcommand(s)
 
