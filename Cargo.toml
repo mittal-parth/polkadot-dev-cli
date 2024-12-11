@@ -1,8 +1,11 @@
 [package]
 name = "polkadot-dev"
 version = "0.1.0"
-authors = ["Parth Mittal <mittalparth22@gmail.com>"]
+authors = ["Parth Mittal"]
 edition = "2021"
+description = "CLI tool for Polkadot developers bundling linting, formatting, and version management"
+license = "GPL-3.0-only"
+repository = "https://github.com/mittal-parth/polkadot-dev-cli"
 
 [dependencies]
 clap = { version = "4.5.20" }
