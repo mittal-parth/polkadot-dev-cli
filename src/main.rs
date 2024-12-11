@@ -15,7 +15,7 @@ fn main() {
         .about(
             "CLI tool for Polkadot developers bundling linting, formatting, and version management",
         )
-        .subcommand_required(true)
+        .subcommand_required(false)
         // `help-contribute` command to show a checklist for contributing to the project
         .subcommand(
             Command::new("help-contribute")
@@ -796,6 +796,19 @@ fn main() {
         Some(("prdoc", sub_matches)) => prdoc::handle_prdoc_command(sub_matches),
         Some(("version", sub_matches)) => psvm::handle_version_command(sub_matches),
         Some(("checkup", sub_matches)) => checkup::run_checkup(sub_matches),
+        None => {
+            // Print an inviting message when no subcommand is invoked
+            println!(
+                "\nWelcome to Polkadot-Dev CLI!\n\n\
+                Polkadot unites the world's innovators and changemakers, building and using the most transformative apps and blockchains.\n\n\
+                This tool bundles useful commands for Polkadot developers, including:\n\
+                - Linting\n\
+                - Formatting\n\
+                - Version management\n\n\
+                To get started with the polkadot-dev CLI try running `polkadot-dev help`.\n\n\
+                Happy hacking! 🚀\n"
+            );
+        }
         _ => unreachable!("Invalid command or subcommand combination. Please refer to the help"),
     };
 }
