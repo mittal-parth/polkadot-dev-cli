@@ -5,12 +5,14 @@ mod install;
 mod prdoc;
 mod psvm;
 mod checkup;
+mod logged_command;
 
 use clap::{Arg, Command};
 
 fn main() {
     let cmd = Command::new("polkadot-dev")
         .bin_name("polkadot-dev")
+        .visible_alias("polkadot-dev-cli")
         .version("1.0")
         .about(
             "CLI tool for Polkadot developers bundling linting, formatting, and version management",

@@ -1,4 +1,5 @@
 // Module for handling the `flint` command and its subcommands
+use crate::logged_command::LoggedCommand;
 use std::io::{self};
 use std::process::Command;
 
@@ -23,7 +24,7 @@ pub fn handle_flint_command(sub_matches: &clap::ArgMatches) {
         }
     }
 
-    let mut cmd = Command::new("zepter");
+    let mut cmd = LoggedCommand::new("zepter");
 
     add_optional_args(
         &mut cmd,
@@ -54,7 +55,7 @@ pub fn handle_flint_command(sub_matches: &clap::ArgMatches) {
     }
 }
 
-pub fn handle_run(cmd: &mut Command, sub_matches: &clap::ArgMatches) {
+pub fn handle_run(cmd: &mut LoggedCommand, sub_matches: &clap::ArgMatches) {
     cmd.arg("run");
 
     let config = sub_matches.get_one::<String>("config");
@@ -74,7 +75,7 @@ pub fn handle_run(cmd: &mut Command, sub_matches: &clap::ArgMatches) {
 }
 
 // Function to run zepter lint features
-pub fn handle_format_features(cmd: &mut Command, sub_matches: &clap::ArgMatches) {
+pub fn handle_format_features(cmd: &mut LoggedCommand, sub_matches: &clap::ArgMatches) {
     cmd.arg("format").arg("features");
 
     let no_workspace = sub_matches.get_flag("no-workspace");
@@ -112,7 +113,7 @@ pub fn handle_format_features(cmd: &mut Command, sub_matches: &clap::ArgMatches)
 }
 
 // Function to handle the `trace` subcommand
-fn handle_trace_command(cmd: &mut Command, trace_matches: &clap::ArgMatches) {
+fn handle_trace_command(cmd: &mut LoggedCommand, trace_matches: &clap::ArgMatches) {
     cmd.arg("trace");
 
     // Add the from and to arguments if they exist
@@ -143,9 +144,6 @@ fn handle_trace_command(cmd: &mut Command, trace_matches: &clap::ArgMatches) {
     }
 
     match cmd.status() {
-        Ok(status) if !status.success() => {
-            eprintln!("zepter trace failed with status: {}", status);
-        }
         Err(e) => {
             eprintln!("Error running zepter trace: {}", e);
         }
@@ -154,7 +152,7 @@ fn handle_trace_command(cmd: &mut Command, trace_matches: &clap::ArgMatches) {
 }
 
 // Function to handle the `lint` subcommand with nested subcommands
-fn handle_lint_command(cmd: &mut Command, lint_matches: &clap::ArgMatches) {
+fn handle_lint_command(cmd: &mut LoggedCommand, lint_matches: &clap::ArgMatches) {
     cmd.arg("lint");
 
     add_optional_args_for_flint_except_run(cmd, lint_matches);
@@ -180,7 +178,7 @@ fn handle_lint_command(cmd: &mut Command, lint_matches: &clap::ArgMatches) {
     }
 }
 
-fn handle_propagate_feature(cmd: &mut Command, matches: &clap::ArgMatches) {
+fn handle_propagate_feature(cmd: &mut LoggedCommand, matches: &clap::ArgMatches) {
     let features = matches.get_one::<String>("features").expect("required");
     let packages = matches.get_one::<String>("packages");
     let features_enables_dep = matches.get_one::<String>("features-enables-dep");
@@ -243,7 +241,7 @@ fn handle_propagate_feature(cmd: &mut Command, matches: &clap::ArgMatches) {
 }
 
 // Nested subcommand handling for `never-enables`
-fn handle_never_enables(cmd: &mut Command, matches: &clap::ArgMatches) {
+fn handle_never_enables(cmd: &mut LoggedCommand, matches: &clap::ArgMatches) {
     let precondition = matches.get_one::<String>("precondition").expect("required");
     let stays_disabled = matches
         .get_one::<String>("stays-disabled")
@@ -262,7 +260,7 @@ fn handle_never_enables(cmd: &mut Command, matches: &clap::ArgMatches) {
 }
 
 // Nested subcommand handling for `never-implies`
-fn handle_never_implies(cmd: &mut Command, matches: &clap::ArgMatches) {
+fn handle_never_implies(cmd: &mut LoggedCommand, matches: &clap::ArgMatches) {
     let precondition = matches.get_one::<String>("precondition").expect("required");
     let stays_disabled = matches
         .get_one::<String>("stays-disabled")
@@ -295,7 +293,7 @@ fn handle_never_implies(cmd: &mut Command, matches: &clap::ArgMatches) {
     }
 }
 
-fn handle_only_enables(cmd: &mut Command, matches: &clap::ArgMatches) {
+fn handle_only_enables(cmd: &mut LoggedCommand, matches: &clap::ArgMatches) {
     let precondition = matches.get_one::<String>("precondition").expect("required");
     let only_enables = matches.get_one::<String>("only-enables").expect("required");
     let path_delimiter = matches
@@ -316,7 +314,7 @@ fn handle_only_enables(cmd: &mut Command, matches: &clap::ArgMatches) {
     }
 }
 
-fn handle_why_enabled(cmd: &mut Command, matches: &clap::ArgMatches) {
+fn handle_why_enabled(cmd: &mut LoggedCommand, matches: &clap::ArgMatches) {
     let package = matches.get_one::<String>("package").expect("required");
     let feature = matches.get_one::<String>("feature").expect("required");
 
@@ -330,7 +328,7 @@ fn handle_why_enabled(cmd: &mut Command, matches: &clap::ArgMatches) {
     }
 }
 
-fn handle_debug_command(cmd: &mut Command, debug_matches: &clap::ArgMatches) {
+fn handle_debug_command(cmd: &mut LoggedCommand, debug_matches: &clap::ArgMatches) {
     cmd.arg("debug");
 
     add_optional_args_for_flint_except_run(cmd, debug_matches);
@@ -350,7 +348,7 @@ fn handle_debug_command(cmd: &mut Command, debug_matches: &clap::ArgMatches) {
     }
 }
 
-fn handle_transpose_command(cmd: &mut Command, transpose_matches: &clap::ArgMatches) {
+fn handle_transpose_command(cmd: &mut LoggedCommand, transpose_matches: &clap::ArgMatches) {
     cmd.arg("transpose");
 
     add_optional_args_for_flint_except_run(cmd, transpose_matches);
@@ -405,25 +403,19 @@ fn handle_transpose_command(cmd: &mut Command, transpose_matches: &clap::ArgMatc
 
 // Helper function to ensure zepter is installed
 fn install_zepter() -> io::Result<()> {
-    let status = Command::new("cargo")
+    LoggedCommand::new("cargo")
         .arg("install")
         .arg("zepter")
         .arg("-f")
         .arg("--locked")
         .status()?;
 
-    if status.success() {
-        println!("zepter installed successfully.");
-    } else {
-        eprintln!("Failed to install zepter.");
-    }
-
     Ok(())
 }
 
 // Helper function to add the flags and arguments common to all zepter commands
 fn add_optional_args(
-    cmd: &mut Command,
+    cmd: &mut LoggedCommand,
     quiet: bool,
     color: bool,
     exit_code_zero: bool,
@@ -454,7 +446,7 @@ fn add_optional_args(
     }
 }
 
-fn add_optional_args_for_flint_except_run(cmd: &mut Command, sub_matches: &clap::ArgMatches) {
+fn add_optional_args_for_flint_except_run(cmd: &mut LoggedCommand, sub_matches: &clap::ArgMatches) {
     let workspace = sub_matches.get_flag("workspace");
     let offline = sub_matches.get_flag("offline");
     let locked = sub_matches.get_flag("locked");
