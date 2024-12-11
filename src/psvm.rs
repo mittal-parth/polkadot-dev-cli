@@ -1,3 +1,4 @@
+use crate::logged_command::LoggedCommand;
 use std::io::{self};
 use std::process::Command;
 
@@ -13,7 +14,7 @@ pub fn handle_version_command(sub_matches: &clap::ArgMatches) {
     }
 
     // Prepare `psvm` command
-    let mut cmd = Command::new("psvm");
+    let mut cmd = LoggedCommand::new("psvm");
 
     // Add optional arguments to the command
     let list = sub_matches.get_flag("list");
@@ -55,13 +56,10 @@ pub fn handle_version_command(sub_matches: &clap::ArgMatches) {
 
 // Helper method to install psvm
 fn install_psvm() -> io::Result<()> {
-    let status = Command::new("cargo").arg("install").arg("psvm").status()?;
-
-    if status.success() {
-        println!("psvm installed successfully.");
-    } else {
-        eprintln!("Failed to install psvm.");
-    }
+    LoggedCommand::new("cargo")
+        .arg("install")
+        .arg("psvm")
+        .status()?;
 
     Ok(())
 }

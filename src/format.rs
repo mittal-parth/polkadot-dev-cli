@@ -1,7 +1,7 @@
-use std::process::Command;
+use crate::logged_command::LoggedCommand;
 
 pub fn run_format(sub_matches: &clap::ArgMatches) {
-    let mut cmd = Command::new("cargo");
+    let mut cmd = LoggedCommand::new("cargo");
 
     cmd.arg("+nightly").arg("fmt");
 

@@ -1,3 +1,4 @@
+use crate::logged_command::LoggedCommand;
 use std::process::Command;
 
 pub fn handle_prdoc_command(sub_matches: &clap::ArgMatches) {
@@ -11,7 +12,7 @@ pub fn handle_prdoc_command(sub_matches: &clap::ArgMatches) {
         install_prdoc().unwrap();
     }
 
-    let mut cmd = Command::new("prdoc");
+    let mut cmd = LoggedCommand::new("prdoc");
 
     if let Some(config) = config {
         cmd.arg("--config").arg(config);
@@ -36,7 +37,7 @@ pub fn handle_prdoc_command(sub_matches: &clap::ArgMatches) {
     }
 }
 
-fn handle_generate(cmd: &mut Command, generate_matches: &clap::ArgMatches) {
+fn handle_generate(cmd: &mut LoggedCommand, generate_matches: &clap::ArgMatches) {
     cmd.arg("generate");
 
     let number = generate_matches
@@ -59,7 +60,7 @@ fn handle_generate(cmd: &mut Command, generate_matches: &clap::ArgMatches) {
     }
 }
 
-fn handle_check(cmd: &mut Command, check_matches: &clap::ArgMatches) {
+fn handle_check(cmd: &mut LoggedCommand, check_matches: &clap::ArgMatches) {
     cmd.arg("check");
 
     let file = check_matches.get_one::<String>("file");
@@ -85,7 +86,7 @@ fn handle_check(cmd: &mut Command, check_matches: &clap::ArgMatches) {
     }
 }
 
-fn handle_scan(cmd: &mut Command, scan_matches: &clap::ArgMatches) {
+fn handle_scan(cmd: &mut LoggedCommand, scan_matches: &clap::ArgMatches) {
     cmd.arg("scan");
 
     let all = scan_matches.get_flag("all");
@@ -103,7 +104,7 @@ fn handle_scan(cmd: &mut Command, scan_matches: &clap::ArgMatches) {
     }
 }
 
-fn handle_load(cmd: &mut Command, load_matches: &clap::ArgMatches) {
+fn handle_load(cmd: &mut LoggedCommand, load_matches: &clap::ArgMatches) {
     cmd.arg("load");
 
     let file = load_matches.get_one::<String>("file");
