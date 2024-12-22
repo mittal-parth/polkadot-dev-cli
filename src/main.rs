@@ -10,9 +10,9 @@ mod logged_command;
 use clap::{Arg, Command};
 
 fn main() {
-    let cmd = Command::new("polkadot-dev")
-        .bin_name("polkadot-dev")
-        .visible_alias("polkadot-dev-cli")
+    let cmd = Command::new("polkadot-dev-cli")
+        .bin_name("polkadot-dev-cli")
+        .visible_alias("polkadot-dev")
         .version("1.0")
         .about(
             "CLI tool for Polkadot developers bundling linting, formatting, and version management",

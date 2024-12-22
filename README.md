@@ -2,12 +2,16 @@
 
 A CLI tool for Polkadot developers to include different crates and tools for developing on Polkadot like linting, formatting, version management, etc.
 
+## Installation
+
+`cargo install polkadot-dev-cli`
+
 ## Usage
 
 ```
 CLI tool for Polkadot developers bundling linting, formatting, and version management
 
-Usage: polkadot-dev <COMMAND>
+Usage: polkadot-dev-cli <COMMAND>
 
 Commands:
   help-contribute  Show a checklist for contributing to the project
@@ -28,12 +32,12 @@ Options:
 
 In general the `--help` or `-h` flag can be used to get help for any command.
 
-#### `polkadot-dev format`
+#### `polkadot-dev-cli format`
 
 ```
 Format code using the correct Rust nightly version
 
-Usage: polkadot-dev format [OPTIONS]
+Usage: polkadot-dev-cli format [OPTIONS]
 
 Options:
   -q, --quiet
@@ -56,14 +60,14 @@ Options:
           Print help
 ```
 
-#### `polkadot-dev flint`
+#### `polkadot-dev-cli flint`
 
-*Only the top level commands are mentioned here. For individual subcommands, please refer to the help message. Eg: `polkadot-dev fint trace --help`*
+*Only the top level commands are mentioned here. For individual subcommands, please refer to the help message. Eg: `polkadot-dev-cli fint trace --help`*
 
 ```
 Analyze, Fix and Lint features in your Rust workspace via Zepter
 
-Usage: polkadot-dev flint [OPTIONS] [COMMAND]
+Usage: polkadot-dev-cli flint [OPTIONS] [COMMAND]
 
 Commands:
   run              Run a workflow from the config file. Uses `default` if none is specified.
@@ -84,12 +88,12 @@ Options:
   -h, --help                           Print help
 ```
 
-#### `polkadot-dev version`
+#### `polkadot-dev-cli version`
 
 ```
 Manage Polkadot SDK versions via psvm
 
-Usage: polkadot-dev version [OPTIONS]
+Usage: polkadot-dev-cli version [OPTIONS]
 
 Options:
   -l, --list               List all available versions
@@ -101,14 +105,14 @@ Options:
   -h, --help               Print help
 ```
 
-#### `polkadot-dev prdoc`
+#### `polkadot-dev-cli prdoc`
 
-*Note: Only the top level command is mentioned here. Use the `--help` flag to get help for individual subcommands. Eg: `polkadot-dev prdoc scan --help`*
+*Note: Only the top level command is mentioned here. Use the `--help` flag to get help for individual subcommands. Eg: `polkadot-dev-cli prdoc scan --help`*
 
 ```
 Generate, check and load PRDoc files via prdoc
 
-Usage: polkadot-dev prdoc [OPTIONS] [COMMAND]
+Usage: polkadot-dev-cli prdoc [OPTIONS] [COMMAND]
 
 Commands:
   generate  Generate a new file. It will be saved by default unless you provide --dry-run.
@@ -126,48 +130,39 @@ Options:
   -h, --help                           Print help
 ```
 
-#### `polkadot-dev checkup`
+#### `polkadot-dev-cli checkup`
 
 ```
 Runs format, flint and version altogether
 
-Usage: polkadot-dev checkup
+Usage: polkadot-dev-cli checkup
 
 Options:
   -v, --version <version>  Specify the Polkadot SDK version to check versions against
   -h, --help               Print help
 ```
 
-#### `polkadot-dev install`
+#### `polkadot-dev-cli install`
 
 ```
 Install all the required dependencies for polkadot-sdk development
 
-Usage: polkadot-dev install
+Usage: polkadot-dev-cli install
 
 Options:
   -h, --help  Print help
 ```
 
-#### `polkadot-dev help-contribute`
+#### `polkadot-dev-cli help-contribute`
 
 ```
 Show a checklist for contributing to the project
 
-Usage: polkadot-dev help-contribute
+Usage: polkadot-dev-cli help-contribute
 
 Options:
   -h, --help  Print help
 ```
-
-## Installation
-
-1. Clone the repository
-2. Run `cargo build --release` in the root directory of the repository
-3. Run `cargo install --path <path>` where `<path>` is the path to the root directory of this repository
-  Eg: If you are using this for the polkadot-sdk:
-    1. Head to the root directory of the polkadot-sdk
-    2. Run `cargo install --path <path to the root directory of polkadot-dev-cli>`
 
 ## Contributing
 
@@ -178,7 +173,7 @@ We welcome contributions in the form of pull requests, issues and documentation.
 
 ## References
 
-The polkadot-dev CLI is powered by a number of tools and libraries. Here are their individual documentations. Big thanks to the developers of these tools! 🎉:
+The polkadot-dev-cli CLI is powered by a number of tools and libraries. Here are their individual documentations. Big thanks to the developers of these tools! 🎉:
 
 1. `format`: [rustfmt](https://github.com/rust-lang/rustfmt)
 2. `flint`: [Zepter](https://github.com/ggwpez/zepter)
