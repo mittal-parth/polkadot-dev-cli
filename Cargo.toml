@@ -1,6 +1,6 @@
 [package]
-name = "polkadot-dev"
-version = "0.1.0"
+name = "polkadot-dev-cli"
+version = "1.0.0"
 authors = ["Parth Mittal"]
 edition = "2021"
 description = "CLI tool for Polkadot developers bundling linting, formatting, and version management"
