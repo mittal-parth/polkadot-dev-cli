@@ -811,6 +811,6 @@ fn main() {
                 Happy hacking! 🚀\n"
             );
         }
-        _ => unreachable!("Invalid command or subcommand combination. Please refer to the help"),
+        _ => println!("Invalid command or subcommand combination. Please refer to the help by running `polkadot-dev-cli --help`."),
     };
 }

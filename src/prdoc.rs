@@ -33,7 +33,7 @@ pub fn handle_prdoc_command(sub_matches: &clap::ArgMatches) {
         Some(("check", check_matches)) => handle_check(&mut cmd, check_matches),
         Some(("scan", scan_matches)) => handle_scan(&mut cmd, scan_matches),
         Some(("load", load_matches)) => handle_load(&mut cmd, load_matches),
-        _ => unreachable!("Invalid command or subcommand combination. Please refer to the help"),
+        _ => println!("Invalid subcommand. Please refer to the help by running `polkadot-dev-cli prdoc --help`."),
     }
 }
 
