@@ -51,7 +51,7 @@ pub fn handle_flint_command(sub_matches: &clap::ArgMatches) {
         Some(("transpose", transpose_matches)) => {
             handle_transpose_command(&mut cmd, transpose_matches)
         }
-        _ => unreachable!("Invalid command or subcommand combination. Please refer to the help"),
+        _ => println!("Invalid command or subcommand combination. Please refer to the help by running `polkadot-dev-cli flint --help`"),
     }
 }
 
@@ -174,7 +174,7 @@ fn handle_lint_command(cmd: &mut LoggedCommand, lint_matches: &clap::ArgMatches)
         Some(("why-enabled", why_enabled_matches)) => {
             handle_why_enabled(cmd, why_enabled_matches);
         }
-        _ => unreachable!("Subcommands are required for the lint command!"),
+        _ => println!("Invalid lint subcommand. Please refer to the help by running `polkadot-dev-cli flint lint --help`"),
     }
 }
 
@@ -391,9 +391,9 @@ fn handle_transpose_command(cmd: &mut LoggedCommand, transpose_matches: &clap::A
                     );
                 }
             }
-            _ => unreachable!("Subcommands are required for the transpose command!"),
+            _ => println!("Invalid subcommand for zepter transpose dependency. Please refer to the help by running `polkadot-dev-cli flint transpose dependency --help`"),
         },
-        _ => unreachable!("Subcommands are required for the transpose command!"),
+        _ => println!("Invalid subcommand for zepter transpose. Please refer to the help by running `polkadot-dev-cli flint transpose --help`"),
     }
     // Run command
     if let Err(e) = cmd.status() {
